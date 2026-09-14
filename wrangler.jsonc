@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vika-sports",
+  "compatibility_date": "2026-09-14",
+  "observability": {
+    "traces": {
+      "enabled": true
+    }
+  }
+}
