@@ -12,6 +12,7 @@ window.VikaBacktest=(function(){
   function summary(){return stats(read())}
   function breakdown(field){const a=read().filter(x=>x.status==='SETTLED'),groups={};for(const x of a){const key=String(x[field]??'unknown');(groups[key]??=[]).push(x)}return Object.entries(groups).map(([key,rows])=>({key,...stats(rows)})).sort((a,b)=>(b.settled||0)-(a.settled||0))}
   function calibration(){const a=read().filter(x=>x.status==='SETTLED'&&finite(x.probability)),buckets=[[50,59.999],[60,69.999],[70,79.999],[80,89.999],[90,100]];return buckets.map(([lo,hi])=>{const r=a.filter(x=>Number(x.probability)>=lo&&Number(x.probability)<=hi),w=r.filter(x=>x.won).length;return{label:`${lo}–${hi}%`,count:r.length,hit:r.length?w/r.length*100:null,expected:r.length?r.reduce((z,x)=>z+Number(x.probability),0)/r.length:null}})}
+  function adaptive(){const s=read().filter(x=>x.status==='SETTLED'),n=s.length;if(n<10)return{ready:false,n,adjustment:0,reason:'Нужно минимум 10 рассчитанных прогнозов.'};const hit=s.filter(x=>x.won).length/n*100;const adjustment=hit>=65?3:hit<50?-3:hit<55?-1:0;return{ready:true,n,hitRate:hit,adjustment,reason:`На выборке ${n} прогнозов фактическая проходимость ${hit.toFixed(1)}%.`}}
   function clear(){write([])}
-  return{read,addPrediction,settle,settleEvent,settleFromScore,summary,breakdown,calibration,clear,KEY};
+  return{read,addPrediction,settle,settleEvent,settleFromScore,summary,breakdown,calibration,adaptive,clear,KEY};
 })();
