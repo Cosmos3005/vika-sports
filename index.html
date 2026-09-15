@@ -4,47 +4,51 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#07090d">
-<meta name="description" content="VIKA SPORTS, AI-платформа спортивной аналитики">
+<meta name="description" content="VIKA SPORTS, AI-платформа спортивной аналитики. Beta, сайт находится в разработке.">
 <link rel="icon" type="image/svg+xml" href="assets/vika-icon.svg">
 <link rel="apple-touch-icon" href="assets/vika-icon.svg">
-<title>VIKA SPORTS · AI Sports Analytics</title>
+<title>VIKA SPORTS · Beta</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="devbar"><span>VIKA SPORTS</span><b>EARLY PUBLIC BUILD</b><span>Vika AI · real data · honest results</span></div>
+<div class="devbar"><span>🚧 VIKA SPORTS</span><b>САЙТ В РАЗРАБОТКЕ · BETA</b><span>Функции постепенно подключаются · данные и прогнозы тестируются</span></div>
 <header>
   <div class="wrap nav">
-    <a class="brand" href="#top"><img src="assets/vika-icon.svg" alt="VIKA SPORTS"><span>VIKA <b>SPORTS</b><small>AI SPORTS ANALYTICS</small></span></a>
-    <nav><a class="active" href="#top">Главная</a><a href="#matches">Матч-центр</a><a href="#picks">VikaAI</a><a href="#live">LIVE</a><a href="#stats">Результаты</a><a href="#about">Vika</a></nav>
+    <a class="brand" href="index.html"><img src="assets/vika-icon.svg" alt="VIKA SPORTS"><span>VIKA <b>SPORTS</b><small>AI SPORTS ANALYTICS · BETA</small></span></a>
+    <nav><a class="active" href="index.html">Главная</a><a href="matches.html">Матч-центр</a><a href="vika-ai.html">VikaAI</a><a href="live.html">LIVE</a><a href="results.html">Результаты</a><a href="vika.html">Vika</a></nav>
     <div class="nav-actions"><button id="loginBtn" class="loginbtn">Войти</button><button id="settings" class="iconbtn">⚙</button></div>
   </div>
 </header>
 <main class="wrap" id="top">
 <section class="hero">
   <div class="hero-copy">
-    <div class="eyebrow">VIKA AI · SPORTS INTELLIGENCE</div>
+    <div class="eyebrow">VIKA AI · SPORTS INTELLIGENCE · BETA</div>
     <h1>Не просто прогноз.<br><em>Понимание матча.</em></h1>
-    <p>VIKA SPORTS собирает реальные спортивные события, проверяет форму и контекст, сравнивает сигналы и постепенно учится на собственных результатах. Здесь важна не красивая цифра, а качество решения.</p>
-    <div class="hero-actions"><a class="primary" href="#matches">Открыть матч-центр</a><a class="ghost" href="#picks">Как думает Vika →</a></div>
-    <div class="live-status"><i></i><div><b>Vika online</b><small id="apiStatus">Подключаем реальные события…</small></div></div>
+    <p>VIKA SPORTS находится в активной разработке. Мы собираем реальные спортивные события, проверяем форму и контекст, сравниваем сигналы и постепенно строим собственную систему анализа. Это beta-версия, поэтому часть функций пока недоступна.</p>
+    <div class="hero-actions"><a class="primary" href="matches.html">Открыть матч-центр</a><a class="ghost" href="vika-ai.html">Как думает Vika →</a></div>
+    <div class="live-status"><i></i><div><b>Vika online · BETA</b><small id="apiStatus">Подключаем реальные события…</small></div></div>
   </div>
   <div class="hero-card">
-    <div class="card-top"><span>VIKA ENGINE</span><b>BUILD 2026</b></div>
-    <div class="hero-score"><strong>AI<span>·</span>CORE</strong><small>аналитическая система</small></div>
-    <div class="engine-list"><div><span>Матчей найдено</span><b id="count">0</b></div><div><span>История прогнозов</span><b>LIVE</b></div><div><span>Честная статистика</span><b>ON</b></div></div>
-    <div class="engine-pill"><i></i> ENGINE ACTIVE</div>
+    <div class="card-top"><span>VIKA ENGINE</span><b>DEVELOPMENT BUILD</b></div>
+    <div class="hero-score"><strong>AI<span>·</span>CORE</strong><small>система в разработке</small></div>
+    <div class="engine-list"><div><span>Матчей найдено</span><b id="count">0</b></div><div><span>Статус проекта</span><b>BETA</b></div><div><span>Честная статистика</span><b>ON</b></div></div>
+    <div class="engine-pill"><i></i> DEVELOPMENT ACTIVE</div>
   </div>
 </section>
 
+<section class="beta-notice">
+  <div class="beta-icon">🚧</div><div><strong>VIKA SPORTS ещё строится</strong><p>Перед вами публичная beta-версия. Интерфейс, источники данных и аналитические модели будут меняться по мере разработки. Мы не показываем выдуманные проценты и не выдаём тестовые расчёты за готовые прогнозы.</p></div><span>BETA</span>
+</section>
+
 <section class="day-match" id="picks">
-  <div class="section-head"><div><span class="eyebrow">VikaAI · FEATURED</span><h2>Матч дня</h2></div><span class="muted">появится после расчёта модели</span></div>
+  <div class="section-head"><div><span class="eyebrow">VikaAI · BETA PREVIEW</span><h2>Матч дня</h2></div><span class="muted">модель подключается поэтапно</span></div>
   <div class="day-grid">
-    <div class="day-empty"><div class="day-icon">✦</div><h3>Vika ещё выбирает</h3><p>Когда расчётный слой получит достаточно данных, здесь появится главный сигнал дня. Никаких выдуманных 90% ради красивой карточки.</p><span>MODEL STATUS · TRAINING</span></div>
+    <div class="day-empty"><div class="day-icon">✦</div><h3>Vika ещё выбирает</h3><p>Когда расчётный слой получит достаточно данных, здесь появится главный сигнал дня. Никаких выдуманных 90% ради красивой карточки.</p><span>MODEL STATUS · IN DEVELOPMENT</span></div>
     <div class="metrics-placeholder"><div><small>AI PROBABILITY</small><b>—</b><span>вероятность</span></div><div><small>FAIR ODDS</small><b>—</b><span>честный кэф</span></div><div><small>EDGE</small><b>—</b><span>value</span></div><div><small>CONFIDENCE</small><b>—</b><span>уверенность</span></div></div>
   </div>
 </section>
 
-<section class="signal-strip"><div><span class="eyebrow">VIKA SIGNALS</span><h2>Лучшие сигналы</h2></div><div class="signal-note">Probability · Fair · Edge · Risk</div></section>
+<section class="signal-strip"><div><span class="eyebrow">VIKA SIGNALS · BETA</span><h2>Лучшие сигналы</h2></div><div class="signal-note">Probability · Fair · Edge · Risk</div></section>
 <section class="signal-grid">
   <article class="signal-card"><span class="sport-label">🎾 TENNIS</span><h3>Сигналы появятся после проверки модели</h3><p>Форма, качество соперников, подача, приём, покрытие, H2H и текущий статус матча.</p><div class="signal-values"><b>—</b><b>—</b><b>—</b></div><small>AI · FAIR · EDGE</small></article>
   <article class="signal-card"><span class="sport-label">⚽ FOOTBALL</span><h3>Value будет считаться отдельно</h3><p>Результаты, xG и моменты, составы, контекст, домашний фактор и движение рынка.</p><div class="signal-values"><b>—</b><b>—</b><b>—</b></div><small>AI · FAIR · EDGE</small></article>
@@ -52,8 +56,7 @@
 </section>
 
 <section class="matches-section" id="matches">
-  <div class="toolbar"><div><span class="eyebrow">MATCH CENTER · REAL DATA</span><h2>Матчи <small id="countMirror">0</small></h2></div><div class="tools"><input id="search" placeholder="Команда или игрок…"><button id="refresh">↻ Обновить</button></div></div>
-  <div class="sports"><button class="sport active" data-sport="all">Все</button><button class="sport" data-sport="football">⚽ Футбол</button><button class="sport" data-sport="tennis">🎾 Теннис</button><button class="sport" data-sport="hockey">🏒 Хоккей</button><button class="sport" data-sport="basketball">🏀 Баскетбол</button><button class="sport" data-sport="mma">🥊 MMA</button></div>
+  <div class="toolbar"><div><span class="eyebrow">MATCH CENTER · REAL DATA</span><h2>Последние события <small id="countMirror">0</small></h2></div><div class="tools"><input id="search" placeholder="Команда или игрок…"><a class="tools-link" href="matches.html">Весь матч-центр →</a></div></div>
   <section class="events" id="live"><div id="events"></div></section>
 </section>
 
@@ -65,11 +68,11 @@
 <section class="conflict"><div class="conflict-badge">⚠️ КОНФЛИКТ МОДЕЛЕЙ</div><div><h3>Если сигналы расходятся, Vika снижает уверенность</h3><p>Например, live-статистика может выглядеть отлично, но рейтинг, форма и качество соперников говорят обратное. Такой матч не должен автоматически становиться «замком».</p></div></section>
 
 <section class="results" id="stats">
-  <div><span class="eyebrow">PUBLIC JOURNAL</span><h2>Результаты, а не обещания</h2><p>Каждый опубликованный прогноз должен получить фактический результат. После накопления выборки здесь появятся проходимость, средний коэффициент, ROI и статистика Value.</p></div>
+  <div><span class="eyebrow">PUBLIC JOURNAL · BETA</span><h2>Результаты, а не обещания</h2><p>Каждый опубликованный прогноз должен получить фактический результат. После накопления выборки здесь появятся проходимость, средний коэффициент, ROI и статистика Value.</p></div>
   <div class="number-grid"><div><b id="predictions">0</b><span>прогнозов</span></div><div><b id="wins">0</b><span>выиграно</span></div><div><b id="losses">0</b><span>проиграно</span></div><div><b id="roi">—</b><span>ROI</span></div></div>
 </section>
 </main>
-<footer><div class="wrap"><a class="brand"><img src="assets/vika-icon.svg" alt="VIKA SPORTS"><span>VIKA <b>SPORTS</b><small>AI SPORTS ANALYTICS</small></span></a><div><p>Экспериментальная спортивная аналитика. Не является гарантией результата.</p><p>Ошибки фиксируются так же открыто, как и удачные прогнозы. <a href="https://t.me/VikaWinss" target="_blank" rel="noopener">Telegram VikaWinss →</a></p></div></div></footer>
+<footer><div class="wrap"><a class="brand"><img src="assets/vika-icon.svg" alt="VIKA SPORTS"><span>VIKA <b>SPORTS</b><small>AI SPORTS ANALYTICS · BETA</small></span></a><div><p>🚧 VIKA SPORTS находится в разработке. Это публичная beta-версия.</p><p>Экспериментальная спортивная аналитика. Не является гарантией результата. <a href="https://t.me/VikaWinss" target="_blank" rel="noopener">Telegram VikaWinss →</a></p></div></div></footer>
 <div class="modal" id="modal"><div class="modal-box"><button class="close" id="close">×</button><div id="modalBody"></div></div></div>
 <div class="modal" id="authModal"><div class="modal-box authbox"><button class="close" id="closeAuth">×</button><div class="auth-logo">V</div><span class="eyebrow">VIKA ACCOUNT · BETA</span><h2 id="authTitle">Вход в VIKA SPORTS</h2><p class="muted">Персональный кабинет пока находится в beta.</p><input id="authName" class="fullinput" placeholder="Имя" style="display:none"><input id="authEmail" class="fullinput" type="email" placeholder="Email"><input id="authPass" class="fullinput" type="password" placeholder="Пароль"><button id="authSubmit" class="primary wide">Войти</button><button id="authSwitch" class="linkbtn">Нет аккаунта? Зарегистрироваться</button><p id="authMsg" class="muted"></p></div></div>
 <div class="modal" id="settingsModal"><div class="modal-box"><button class="close" id="closeSettings">×</button><span class="eyebrow">VIKA SETTINGS</span><h2>Настройки</h2><p>Персональные уведомления, избранное и другие функции подключим позже.</p></div></div>
