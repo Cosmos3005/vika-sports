@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07090d"><meta name="description" content="VIKA SPORTS, страница анализа матча, beta.">
+<link rel="icon" href="assets/vika-icon.svg"><link rel="stylesheet" href="styles.css">
+<title>Анализ матча · VIKA SPORTS</title>
+</head>
+<body>
+<div class="devbar"><span>🚧 VIKA SPORTS</span><b>САЙТ В РАЗРАБОТКЕ · BETA</b><span>Анализ матча развивается</span></div>
+<header><div class="wrap nav">
+<a class="brand" href="index.html"><img src="assets/vika-icon.svg" alt="VIKA SPORTS"><span>VIKA <b>SPORTS</b><small>AI SPORTS ANALYTICS · BETA</small></span></a>
+<nav><a href="index.html">Главная</a><a href="matches.html">Матч-центр</a><a class="active" href="vika-ai.html">VikaAI</a><a href="live.html">LIVE</a><a href="results.html">Результаты</a><a href="vika.html">Vika</a></nav>
+<div class="nav-actions"><a class="loginbtn" href="index.html">Войти</a></div>
+</div></header>
+<main class="wrap match-page">
+<section class="match-hero">
+<div><a class="backlink" href="matches.html">← Вернуться в матч-центр</a><div class="eyebrow">MATCH ANALYSIS · VIKAAI · BETA</div><div id="matchStatus" class="match-status">REAL DATA</div><h1 id="matchTitle">Загрузка матча...</h1><p id="matchMeta" class="muted">Получаем данные события</p></div>
+<div class="match-score-card"><small id="matchLeague">VIKA SPORTS</small><strong id="matchScore">– : –</strong><span id="matchTime">—</span></div>
+</section>
+<section class="beta-notice"><div class="beta-icon">🚧</div><div><strong>Аналитический слой ещё в разработке</strong><p>Эта страница уже подготовлена как полноценный центр анализа. Реальные статистические блоки подключаются поэтапно. Пока Vika не показывает выдуманные вероятности.</p></div><span>BETA</span></section>
+<section class="analysis-top">
+<div class="ai-main card-panel"><div class="panel-head"><div><span class="eyebrow">VIKA AI</span><h2>Главный вывод</h2></div><span class="model-state">MODEL · BUILDING</span></div><div class="ai-placeholder"><div class="ai-orb">V</div><div><h3>Расчёт ещё не завершён</h3><p>Vika сначала проверит контекст матча, форму, качество соперников, статистику и возможные противоречия. Только после этого появятся Pass%, Fair и Edge.</p></div></div></div>
+<div class="metrics-card card-panel"><span class="eyebrow">MODEL OUTPUT</span><div class="metric"><small>AI PROBABILITY</small><b>—</b><span>ожидает расчёта</span></div><div class="metric"><small>FAIR ODDS</small><b>—</b><span>ожидает расчёта</span></div><div class="metric"><small>EDGE</small><b>—</b><span>без линии</span></div><div class="metric"><small>CONFIDENCE</small><b>—</b><span>не рассчитано</span></div></div>
+</section>
+<section class="conflict match-conflict"><div class="conflict-badge">⚠️ КОНФЛИКТ МОДЕЛЕЙ</div><div><h3>Этот блок будет обязательным</h3><p>Если live-статистика говорит за одного игрока или команду, а форма, рейтинг, качество соперников или другие признаки говорят против, Vika не должна автоматически повышать уверенность.</p></div></section>
+<section class="data-grid">
+<article class="card-panel"><div class="panel-head"><h2>Форма</h2><span>CHECKLIST</span></div><div class="data-row"><span>Последние матчи</span><b>—</b></div><div class="data-row"><span>Качество соперников</span><b>—</b></div><div class="data-row"><span>Текущая серия</span><b>—</b></div></article>
+<article class="card-panel"><div class="panel-head"><h2>Статистика</h2><span>SPORT PROFILE</span></div><div class="data-row"><span>Атака / подача</span><b>—</b></div><div class="data-row"><span>Защита / приём</span><b>—</b></div><div class="data-row"><span>Доп. метрики</span><b>—</b></div></article>
+<article class="card-panel"><div class="panel-head"><h2>Контекст</h2><span>RISK</span></div><div class="data-row"><span>Состав / травмы</span><b>—</b></div><div class="data-row"><span>Мотивация</span><b>—</b></div><div class="data-row"><span>Условия</span><b>—</b></div></article>
+<article class="card-panel"><div class="panel-head"><h2>H2H</h2><span>HISTORY</span></div><div class="data-row"><span>Очные встречи</span><b>—</b></div><div class="data-row"><span>Свежесть H2H</span><b>—</b></div><div class="data-row"><span>Покрытие / стиль</span><b>—</b></div></article>
+</section>
+<section class="checklist-panel card-panel"><div class="panel-head"><div><span class="eyebrow">VIKA CHECKLIST</span><h2>Что Vika проверяет перед сигналом</h2></div><span>0 / 8 READY</span></div><div class="checkgrid big-check"><span>◌ Реальный статус и счёт</span><span>◌ Форма и последние результаты</span><span>◌ Качество соперников</span><span>◌ H2H и профиль матча</span><span>◌ Расширенная статистика</span><span>◌ Составы / травмы</span><span>◌ Рыночный контекст</span><span>◌ Конфликты моделей</span></div></section>
+<section class="final-box"><span class="eyebrow">VIKA DECISION</span><h2>Сигнала пока нет</h2><p>Это правильное состояние beta-системы. Лучше показать «нет решения», чем придумать процент или назвать матч надёжным без достаточной проверки.</p><a class="ghost" href="matches.html">Выбрать другой матч →</a></section>
+</main>
+<footer><div class="wrap"><p>🚧 VIKA SPORTS находится в разработке. Публичная beta-версия.</p><p><a href="index.html">Главная</a> · <a href="https://t.me/VikaWinss" target="_blank" rel="noopener">Telegram VikaWinss →</a></p></div></footer>
+<script>
+const params=new URLSearchParams(location.search);
+const decode=v=>{try{return decodeURIComponent(v||'')}catch{return v||''}};
+const home=decode(params.get('home'))||'Матч'; const away=decode(params.get('away'))||'событие';
+document.getElementById('matchTitle').textContent=home+' vs '+away;
+document.getElementById('matchScore').textContent=(decode(params.get('score'))||'– : –');
+document.getElementById('matchTime').textContent=decode(params.get('time'))||'—';
+document.getElementById('matchLeague').textContent=decode(params.get('league'))||'VIKA SPORTS';
+document.getElementById('matchMeta').textContent=(decode(params.get('sport'))||'SPORT').toUpperCase()+' · '+(decode(params.get('status'))||'PRE').toUpperCase();
+document.getElementById('matchStatus').textContent=(decode(params.get('status'))||'REAL DATA').toUpperCase();
+</script>
+</body></html>
