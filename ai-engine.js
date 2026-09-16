@@ -6,62 +6,19 @@ window.VikaAIEngine=(function(){
   const confidence=(base,quality,penalty=0)=>clamp(base+quality*7-penalty,35,90);
   const scoreOf=c=>num(c?.score);
   function adaptive(sport,mode,market){try{return window.VikaBacktest?.adaptive?window.VikaBacktest.adaptive(sport,mode,market):null}catch{return null}}
-  function parseRecord(c){
-    const records=c?.records||c?.record||[];
-    for(const r of(Array.isArray(records)?records:[records])){
-      const raw=String(r?.summary||r?.displayValue||r?.value||'');
-      const m=raw.match(/(\d+)\s*[-:]\s*(\d+)(?:\s*[-:]\s*(\d+))?/);
-      if(m){const w=Number(m[1]),l=Number(m[2]);if(w+l)return w/(w+l)}
-    }
-    return null;
-  }
+  function parseRecord(c){const records=c?.records||c?.record||[];for(const r of(Array.isArray(records)?records:[records])){const raw=String(r?.summary||r?.displayValue||r?.value||'');const m=raw.match(/(\d+)\s*[-:]\s*(\d+)(?:\s*[-:]\s*(\d+))?/);if(m){const w=Number(m[1]),l=Number(m[2]);if(w+l)return w/(w+l)}}return null}
   function rankOf(c){return num(c?.rank??c?.ranking?.rank??c?.athlete?.rank)}
   function ratingOf(c){return num(c?.rating??c?.ratings?.[0]?.value??c?.powerRating??c?.powerRank)}
-  function recentForm(c){
-    const v=parseRecord(c); if(v!==null)return v;
-    const form=String(c?.form||c?.recentForm||'').toUpperCase();
-    if(!form)return null;
-    const chars=[...form].filter(x=>['W','L','D'].includes(x));
-    if(!chars.length)return null;
-    return chars.reduce((s,x)=>s+(x==='W'?1:x==='D'?.5:0),0)/chars.length;
-  }
-  function buildPrematch({sport,home,away}){
-    const hf=recentForm(home),af=recentForm(away),hr=ratingOf(home),ar=ratingOf(away),hRank=rankOf(home),aRank=rankOf(away),features=[];
-    if(hf!==null&&af!==null)features.push('form');
-    if(hr!==null&&ar!==null)features.push('rating');
-    if(hRank!==null&&aRank!==null)features.push('ranking');
-    if(features.length<2)return null;
-    let score=0;
-    if(hf!==null&&af!==null)score+=(hf-af)*2.2;
-    if(hr!==null&&ar!==null)score+=clamp((hr-ar)/10,-2,2)*.65;
-    if(hRank!==null&&aRank!==null)score+=clamp((aRank-hRank)/20,-2,2)*.45;
-    if(sport==='football'||sport==='hockey'||sport==='basketball')score+=.18;
-    const homeRaw=clamp(sigmoid(score)*100,10,86),awayRaw=clamp((1-sigmoid(score))*100,10,86);
-    const drawRaw=['football','hockey'].includes(sport)?clamp(24-Math.abs(score)*3,9,25):0;
-    const scale=100/(homeRaw+awayRaw+drawRaw);
-    const probs={home:homeRaw*scale,away:awayRaw*scale};
-    if(drawRaw)probs.draw=drawRaw*scale;
-    const top=Object.entries(probs).sort((a,b)=>b[1]-a[1])[0];
-    const quality=features.length;
-    return{sport,market:drawRaw?'1X2':'ML',selection:top[0],probability:top[1],probabilities:probs,fair:fair(top[1]),confidence:confidence(43,quality),quality,features,experimental:true,reason:`PREMATCH beta: ${features.join(', ')}. ${sport==='football'?'Учтено небольшое преимущество хозяев.':''}`};
-  }
-  function footballLive({home,away,stats}){
-    const sh=stats?.shots?.home??null,sa=stats?.shots?.away??null,sth=stats?.shotsOnTarget?.home??null,sta=stats?.shotsOnTarget?.away??null,ph=stats?.possession?.home??null,pa=stats?.possession?.away??null,gh=scoreOf(home),ga=scoreOf(away),features=[];
-    if(sh!==null&&sa!==null)features.push('shots');if(sth!==null&&sta!==null)features.push('shots_on_target');if(ph!==null&&pa!==null)features.push('possession');if(gh!==null&&ga!==null)features.push('score');
-    if(features.length<3)return null;
-    let edge=0;if(gh!==null&&ga!==null)edge+=clamp(gh-ga,-3,3)*1.05;if(sh!==null&&sa!==null)edge+=clamp((sh-sa)/6,-1.5,1.5)*.55;if(sth!==null&&sta!==null)edge+=clamp((sth-sta)/3,-1.7,1.7)*.9;if(ph!==null&&pa!==null)edge+=clamp((ph-pa)/18,-1.2,1.2)*.25;
-    edge=clamp(edge,-3.5,3.5);const hw=clamp(sigmoid(edge)*100,5,90),aw=clamp((1-sigmoid(edge))*100,5,90),draw=gh===ga?clamp(22-Math.abs(edge)*2,10,24):clamp(16-Math.abs(edge)*1.5,7,16),scale=100/(hw+aw+draw),probs={home:hw*scale,draw:draw*scale,away:aw*scale},top=Object.entries(probs).sort((a,b)=>b[1]-a[1])[0];
-    return{sport:'football',market:'1X2',selection:top[0],probability:top[1],probabilities:probs,fair:fair(top[1]),confidence:confidence(47,features.length,Math.abs(edge)<.35?4:0),quality:features.length,features,experimental:true,reason:`LIVE beta: счёт ${gh}:${ga}, признаки ${features.length}/4.`};
-  }
-  function tennisLive({home,away}){const hs=scoreOf(home),as=scoreOf(away);if(hs===null||as===null)return null;const hsets=(home?.linescores||[]).map(x=>num(x?.value??x)).filter(v=>v!==null),asets=(away?.linescores||[]).map(x=>num(x?.value??x)).filter(v=>v!==null),setDiff=hsets.filter((v,i)=>asets[i]!==undefined&&v>asets[i]).length-hsets.filter((v,i)=>asets[i]!==undefined&&v<asets[i]).length,raw=clamp(setDiff*1.9+(hs-as)*.18,-4,4),hp=clamp(sigmoid(raw)*100,8,92),selection=hp>=50?'home':'away',p=selection==='home'?hp:100-hp;return{sport:'tennis',market:'ML',selection,probability:p,fair:fair(p),confidence:confidence(42,hsets.length||asets.length?2:1,2),quality:hsets.length||asets.length?2:1,features:['live_score',...(hsets.length||asets.length?['set_scores']:[])],experimental:true,reason:'LIVE beta: счёт и доступные сеты.'}}
-  function calculate({sport,home,away,stats,mode='live'}){
-    let r=null;
-    if(sport==='football')r=mode==='prematch'?buildPrematch({sport,home,away}):footballLive({home,away,stats});
-    else if(sport==='tennis')r=mode==='prematch'?buildPrematch({sport,home,away}):tennisLive({home,away});
-    else if(['basketball','hockey','mma'].includes(sport)&&mode==='prematch')r=buildPrematch({sport,home,away});
-    if(r){const a=adaptive(sport,mode,r.market);if(a?.ready&&a.adjustment){r.confidence=clamp(r.confidence+a.adjustment,35,90);r.adaptive={level:a.level,n:a.n,hitRate:a.hitRate,roi:a.roi,adjustment:a.adjustment};r.reason+=` Адаптивная статистика: ${a.reason} Коррекция confidence ${a.adjustment>0?'+':''}${a.adjustment}.`}}
-    return r;
-  }
+  function recentForm(c){const v=parseRecord(c);if(v!==null)return v;const form=String(c?.form||c?.recentForm||'').toUpperCase();if(!form)return null;const chars=[...form].filter(x=>['W','L','D'].includes(x));if(!chars.length)return null;return chars.reduce((s,x)=>s+(x==='W'?1:x==='D'?.5:0),0)/chars.length}
+  function venueForm(c,side){const rows=c?.venueForm||c?.homeAwayForm||c?.homeAway||c?.splitForm;if(typeof rows==='number')return clamp(rows,0,1);if(typeof rows==='string'){const chars=[...rows.toUpperCase()].filter(x=>['W','L','D'].includes(x));if(chars.length)return chars.reduce((s,x)=>s+(x==='W'?1:x==='D'?.5:0),0)/chars.length}const obj=rows?.[side]??rows?.[side==='home'?'home':'away'];if(typeof obj==='number')return clamp(obj,0,1);if(obj?.winRate!=null)return clamp(num(obj.winRate)/100,0,1);if(obj?.wins!=null&&obj?.losses!=null){const w=num(obj.wins),l=num(obj.losses);if(w!==null&&l!==null&&w+l)return w/(w+l)}return null}
+  function h2hEdge(home,away){const rows=home?.h2h||away?.h2h||home?.headToHead||away?.headToHead;if(!Array.isArray(rows)||!rows.length)return null;let weighted=0,weight=0;rows.slice(0,5).forEach((r,i)=>{const hs=num(r?.homeScore??r?.home?.score),as=num(r?.awayScore??r?.away?.score);if(hs===null||as===null)return;const w=1/(i+1);weighted+=(hs>as?1:hs<as?-1:0)*w;weight+=w});return weight?clamp(weighted/weight,-1,1):null}
+  function opponentQuality(c){const rows=c?.recentResults||c?.results||c?.formResults||[];if(!Array.isArray(rows)||!rows.length)return null;const vals=rows.map(r=>num(r?.opponentRank??r?.opponent?.rank??r?.opponentRanking)).filter(v=>v!==null);if(!vals.length)return null;const avg=vals.reduce((a,b)=>a+b,0)/vals.length;return clamp((60-avg)/40,-1,1)}
+  function qualityLabel(n){return n>=6?'HIGH':n>=4?'MEDIUM':'LOW'}
+  function finish(r,sport,mode){if(!r)return null;const a=adaptive(sport,mode,r.market);if(a?.ready&&a.adjustment){r.confidence=clamp(r.confidence+a.adjustment,35,90);r.adaptive={level:a.level,n:a.n,hitRate:a.hitRate,roi:a.roi,adjustment:a.adjustment};r.reason+=` Адаптивная статистика: ${a.reason} Коррекция confidence ${a.adjustment>0?'+':''}${a.adjustment}.`}r.dataQuality=qualityLabel(r.features?.length||0);r.mode=mode;return r}
+  function buildPrematch({sport,home,away}){const hf=recentForm(home),af=recentForm(away),hr=ratingOf(home),ar=ratingOf(away),hRank=rankOf(home),aRank=rankOf(away),hVenue=venueForm(home,'home'),aVenue=venueForm(away,'away'),hh=h2hEdge(home,away),hq=opponentQuality(home),aq=opponentQuality(away),features=[];if(hf!==null&&af!==null)features.push('form');if(hr!==null&&ar!==null)features.push('rating');if(hRank!==null&&aRank!==null)features.push('ranking');if(hVenue!==null&&aVenue!==null)features.push('home_away_form');if(hh!==null)features.push('h2h');if(hq!==null&&aq!==null)features.push('opponent_quality');if(features.length<2)return null;let score=0;if(hf!==null&&af!==null)score+=(hf-af)*2.2;if(hr!==null&&ar!==null)score+=clamp((hr-ar)/10,-2,2)*.65;if(hRank!==null&&aRank!==null)score+=clamp((aRank-hRank)/20,-2,2)*.45;if(hVenue!==null&&aVenue!==null)score+=(hVenue-aVenue)*1.1;if(hh!==null)score+=hh*.4;if(hq!==null&&aq!==null)score+=(hq-aq)*.35;if(['football','hockey','basketball'].includes(sport))score+=.18;const homeRaw=clamp(sigmoid(score)*100,10,86),awayRaw=clamp((1-sigmoid(score))*100,10,86),drawRaw=['football','hockey'].includes(sport)?clamp(24-Math.abs(score)*3,9,25):0,scale=100/(homeRaw+awayRaw+drawRaw),probs={home:homeRaw*scale,away:awayRaw*scale};if(drawRaw)probs.draw=drawRaw*scale;const top=Object.entries(probs).sort((a,b)=>b[1]-a[1])[0],quality=features.length;return finish({sport,market:drawRaw?'1X2':'ML',selection:top[0],probability:top[1],probabilities:probs,fair:fair(top[1]),confidence:confidence(43,quality),quality,features,experimental:true,reason:`PREMATCH beta: ${features.join(', ')}. ${sport==='football'?'Учтено небольшое преимущество хозяев.':''}`},sport,'prematch')}
+  function footballLive({home,away,stats}){const sh=stats?.shots?.home??null,sa=stats?.shots?.away??null,sth=stats?.shotsOnTarget?.home??null,sta=stats?.shotsOnTarget?.away??null,ph=stats?.possession?.home??null,pa=stats?.possession?.away??null,gh=scoreOf(home),ga=scoreOf(away),features=[];if(sh!==null&&sa!==null)features.push('shots');if(sth!==null&&sta!==null)features.push('shots_on_target');if(ph!==null&&pa!==null)features.push('possession');if(gh!==null&&ga!==null)features.push('score');if(features.length<3)return null;let edge=0;if(gh!==null&&ga!==null)edge+=clamp(gh-ga,-3,3)*1.05;if(sh!==null&&sa!==null)edge+=clamp((sh-sa)/6,-1.5,1.5)*.55;if(sth!==null&&sta!==null)edge+=clamp((sth-sta)/3,-1.7,1.7)*.9;if(ph!==null&&pa!==null)edge+=clamp((ph-pa)/18,-1.2,1.2)*.25;edge=clamp(edge,-3.5,3.5);const hw=clamp(sigmoid(edge)*100,5,90),aw=clamp((1-sigmoid(edge))*100,5,90),draw=gh===ga?clamp(22-Math.abs(edge)*2,10,24):clamp(16-Math.abs(edge)*1.5,7,16),scale=100/(hw+aw+draw),probs={home:hw*scale,draw:draw*scale,away:aw*scale},top=Object.entries(probs).sort((a,b)=>b[1]-a[1])[0];return finish({sport:'football',market:'1X2',selection:top[0],probability:top[1],probabilities:probs,fair:fair(top[1]),confidence:confidence(47,features.length,Math.abs(edge)<.35?4:0),quality:features.length,features,experimental:true,reason:`LIVE beta: счёт ${gh}:${ga}, признаки ${features.length}/4.`},'football','live')}
+  function tennisLive({home,away}){const hs=scoreOf(home),as=scoreOf(away);if(hs===null||as===null)return null;const hsets=(home?.linescores||[]).map(x=>num(x?.value??x)).filter(v=>v!==null),asets=(away?.linescores||[]).map(x=>num(x?.value??x)).filter(v=>v!==null),setDiff=hsets.filter((v,i)=>asets[i]!==undefined&&v>asets[i]).length-hsets.filter((v,i)=>asets[i]!==undefined&&v<asets[i]).length,raw=clamp(setDiff*1.9+(hs-as)*.18,-4,4),hp=clamp(sigmoid(raw)*100,8,92),selection=hp>=50?'home':'away',p=selection==='home'?hp:100-hp;return finish({sport:'tennis',market:'ML',selection,probability:p,fair:fair(p),confidence:confidence(42,hsets.length||asets.length?2:1,2),quality:hsets.length||asets.length?2:1,features:['live_score',...(hsets.length||asets.length?['set_scores']:[])],experimental:true,reason:'LIVE beta: счёт и доступные сеты.'},'tennis','live')}
+  function calculate({sport,home,away,stats,mode='live'}){let r=null;if(sport==='football')r=mode==='prematch'?buildPrematch({sport,home,away}):footballLive({home,away,stats});else if(sport==='tennis')r=mode==='prematch'?buildPrematch({sport,home,away}):tennisLive({home,away});else if(['basketball','hockey','mma'].includes(sport)&&mode==='prematch')r=buildPrematch({sport,home,away});return r}
   function edge(probability,odds){const o=num(odds);return probability!==null&&o!==null&&o>1?probability/100*o-1:null}
   function label(selection,names){return selection==='home'?names.home:selection==='away'?names.away:'Ничья'}
   function settle(prediction,result){if(!prediction||!result)return null;const won=prediction.selection===result;return{...prediction,result,won,brier:Math.pow(prediction.probability/100-(won?1:0),2)}}
