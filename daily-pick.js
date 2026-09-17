@@ -1,26 +1,19 @@
 window.VikaDailyPick=(function(){
-  const MIN_ODDS=1.60;
-  const MIN_EDGE=0.03;
-  const MIN_PROB=55;
-  const MIN_CONF=60;
+  const MIN_ODDS=1.60,MIN_EDGE=0.03,MIN_PROB=55,MIN_CONF=60;
   const SPORT={football:'⚽ ФУТБОЛ',tennis:'🎾 ТЕННИС',hockey:'🏒 ХОККЕЙ',basketball:'🏀 БАСКЕТБОЛ',mma:'🥊 MMA'};
   const $=s=>document.querySelector(s);
   function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
   function fmtTime(v){const d=new Date(v);return Number.isNaN(d.getTime())?'—':d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}
-  function render(row,scanned){
-    const box=$('#dailyPick');if(!box)return;
-    if(!row){box.innerHTML=`<div class="daily-empty"><div class="daily-mark">✦</div><div><span class="eyebrow">VIKA DAILY · ${new Date().toLocaleDateString('ru-RU')}</span><h3>Сегодня Vika не публикует ставку</h3><p>Нет матча, который одновременно прошёл проверку модели, имеет актуальную линию от 1.60 и не попал в конфликт. Мы лучше пропустим день, чем нарисуем «прогноз дня» из воздуха.</p><small>Проверено событий: ${scanned} · LIVE-линия не используется для прогноза дня</small></div></div>`;return}
+  function mount(){const section=$('#picks');if(!section)return null;let box=$('#dailyPick');if(!box){section.innerHTML='<div class="section-head"><div><span class="eyebrow">VIKA DAILY · REAL DATA</span><h2>Прогноз дня</h2></div><span id="dailyPickStatus" class="muted">Проверяем актуальные матчи…</span></div><div id="dailyPick"></div>'}return $('#dailyPick')}
+  function render(row,scanned){const box=mount();if(!box)return;if(!row){box.innerHTML=`<div class="daily-empty"><div class="daily-mark">✦</div><div><span class="eyebrow">VIKA DAILY · ${new Date().toLocaleDateString('ru-RU')}</span><h3>Сегодня Vika не публикует ставку</h3><p>Нет матча, который одновременно прошёл проверку модели, имеет актуальную линию от 1.60 и не попал в конфликт. Лучше пропуск, чем выдуманный прогноз.</p><small>Проверено событий: ${scanned} · минимальный кэф 1.60</small></div></div>`;return}
     const pick=row.selection==='home'?row.home:row.selection==='away'?row.away:'Ничья';
     const href=`match.html?sport=${encodeURIComponent(row.sport)}&eventId=${encodeURIComponent(row.eventId)}&home=${encodeURIComponent(row.home)}&away=${encodeURIComponent(row.away)}&mode=prematch`;
     const edge=`${row.edge>=0?'+':''}${(row.edge*100).toFixed(1)}%`;
-    box.innerHTML=`<article class="daily-card"><div class="daily-card-top"><span class="daily-badge">🔥 ПРОГНОЗ ДНЯ</span><span>${esc(SPORT[row.sport]||row.sport)} · ${fmtTime(row.time)}</span></div><div class="daily-matchup"><div><small>МАТЧ</small><h3>${esc(row.home)}</h3><h3>${esc(row.away)}</h3><p>${esc(row.mode==='live'?'LIVE':'PREMATCH')} · линия проверена перед публикацией</p></div><div class="daily-pick"><small>VIKA ВЫБИРАЕТ</small><strong>${esc(pick)}</strong><b>КЭФ ${Number(row.odds).toFixed(2)}</b></div></div><div class="daily-metrics"><div><span>AI probability</span><b>${Number(row.probability).toFixed(1)}%</b></div><div><span>Fair</span><b>${Number(row.fair).toFixed(2)}</b></div><div><span>Edge</span><b>${edge}</b></div><div><span>Confidence</span><b>${Number(row.confidence).toFixed(0)}%</b></div></div><div class="daily-foot"><span>Актуальная линия · ${esc(row.lineSource||'доступный источник линии')} · обновлено ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</span><a href="${href}">Разбор матча →</a></div></article>`;
+    box.innerHTML=`<article class="daily-card"><div class="daily-card-top"><span class="daily-badge">🔥 ПРОГНОЗ ДНЯ</span><span>${esc(SPORT[row.sport]||row.sport)} · ${fmtTime(row.time)}</span></div><div class="daily-matchup"><div><small>МАТЧ</small><h3>${esc(row.home)}</h3><h3>${esc(row.away)}</h3><p>PREMATCH · актуальная линия проверена перед публикацией</p></div><div class="daily-pick"><small>VIKA ВЫБИРАЕТ</small><strong>${esc(pick)}</strong><b>КЭФ ${Number(row.odds).toFixed(2)}</b></div></div><div class="daily-metrics"><div><span>AI probability</span><b>${Number(row.probability).toFixed(1)}%</b></div><div><span>Fair</span><b>${Number(row.fair).toFixed(2)}</b></div><div><span>Edge</span><b>${edge}</b></div><div><span>Confidence</span><b>${Number(row.confidence).toFixed(0)}%</b></div></div><div class="daily-foot"><span>Линия · ${esc(row.lineSource||'доступный источник')} · обновлено ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</span><a href="${href}">Разбор матча →</a></div></article>`;
   }
-  function choose(rows){
-    return (rows||[]).filter(x=>x&&x.mode==='prematch'&&x.status==='SIGNAL'&&!x.conflict&&Number(x.odds)>=MIN_ODDS&&Number(x.edge)>=MIN_EDGE&&Number(x.probability)>=MIN_PROB&&Number(x.confidence)>=MIN_CONF).sort((a,b)=>(b.edge-a.edge)||(b.confidence-a.confidence)||(b.probability-a.probability))[0]||null;
-  }
-  async function refresh(){
-    const status=$('#dailyPickStatus');if(status)status.textContent='Vika проверяет актуальные матчи и линию…';
-    try{const rows=window.VikaRadar?await window.VikaRadar.scan():[];const pick=choose(rows);render(pick,rows.length);if(status)status.textContent=pick?`Проверено ${rows.length} событий · выбран 1 подтверждённый сигнал`:`Проверено ${rows.length} событий · подходящего сигнала ≥ 1.60 нет`;}catch(e){render(null,0);if(status)status.textContent='Данные временно недоступны';}}
-  document.addEventListener('DOMContentLoaded',()=>{if($('#dailyPick')){refresh();setInterval(refresh,120000)}});
+  function choose(rows){return(rows||[]).filter(x=>x&&x.mode==='prematch'&&x.status==='SIGNAL'&&!x.conflict&&Number(x.odds)>=MIN_ODDS&&Number(x.edge)>=MIN_EDGE&&Number(x.probability)>=MIN_PROB&&Number(x.confidence)>=MIN_CONF).sort((a,b)=>(b.edge-a.edge)||(b.confidence-a.confidence)||(b.probability-a.probability))[0]||null}
+  async function refresh(){mount();const status=$('#dailyPickStatus');if(status)status.textContent='Vika проверяет актуальные матчи и линию…';try{const rows=window.VikaRadar?await window.VikaRadar.scan():[];const pick=choose(rows);render(pick,rows.length);if(status)status.textContent=pick?`Проверено ${rows.length} событий · выбран 1 подтверждённый сигнал`:`Проверено ${rows.length} событий · подходящего сигнала ≥ 1.60 нет`;}catch(e){render(null,0);if(status)status.textContent='Данные временно недоступны'}}
+  function start(){if(!$('#picks'))return;refresh();setInterval(refresh,120000)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
   return{refresh,choose};
 })();
